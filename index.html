@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>Contact WADS</title>
 
-  <!-- EmailJS -->
   <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <script>
     (function(){
@@ -55,7 +54,14 @@
       margin-top: 10px;
       font-weight: bold;
       min-height: 20px;
-      display: none; /* hidden by default */
+
+      /* Hidden state */
+      visibility: hidden;
+      opacity: 0;
+      height: 0;
+      overflow: hidden;
+
+      transition: opacity 0.4s ease;
     }
 
     #status.success {
@@ -87,23 +93,28 @@ const form = document.getElementById("contact-form");
 const button = document.getElementById("send-btn");
 const statusDiv = document.getElementById("status");
 
-let statusTimeout = null;
+let statusTimeout;
 
 function showStatus(message, type) {
-  // Clear previous timeout if it exists
-  if (statusTimeout) {
-    clearTimeout(statusTimeout);
-  }
+  clearTimeout(statusTimeout);
 
   statusDiv.textContent = message;
   statusDiv.className = type;
-  statusDiv.style.display = "block";
 
-  // Hide after 5 seconds
+  // FORCE SHOW (Google Sites safe)
+  statusDiv.style.visibility = "visible";
+  statusDiv.style.opacity = "1";
+  statusDiv.style.height = "auto";
+
   statusTimeout = setTimeout(() => {
-    statusDiv.textContent = "";
-    statusDiv.className = "";
-    statusDiv.style.display = "none";
+    statusDiv.style.opacity = "0";
+
+    setTimeout(() => {
+      statusDiv.textContent = "";
+      statusDiv.className = "";
+      statusDiv.style.visibility = "hidden";
+      statusDiv.style.height = "0";
+    }, 400); // wait for fade
   }, 5000);
 }
 
@@ -114,7 +125,6 @@ form.addEventListener("submit", function(e) {
 
   button.disabled = true;
   button.innerText = "Sending...";
-  statusDiv.style.display = "none";
 
   emailjs.sendForm(
     "service_tghxph7",
