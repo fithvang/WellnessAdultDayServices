@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Contact WADS</title>
+  <title>Contact Us</title>
 
+  <!-- EmailJS -->
   <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <script>
     (function(){
@@ -12,26 +13,45 @@
   </script>
 
   <style>
+    /* FIX INPUT OVERFLOW */
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Arial, sans-serif;
       background: #f6f8fa;
       padding: 20px;
     }
 
-    form {
-      max-width: 420px;
+    .form-wrapper {
+      max-width: 460px;
       margin: auto;
       background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 24px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 15px;
     }
 
     input, textarea, button {
       width: 100%;
-      padding: 10px;
-      margin-top: 10px;
+      padding: 12px;
+      margin-top: 12px;
       font-size: 14px;
+      border-radius: 4px;
+    }
+
+    input, textarea {
+      border: 1px solid #ccc;
+    }
+
+    textarea {
+      resize: vertical;
     }
 
     button {
@@ -39,28 +59,22 @@
       color: white;
       border: none;
       cursor: pointer;
+      font-weight: bold;
     }
 
-    button:disabled {
-      background: #9bbcff;
-      cursor: not-allowed;
-    }
-
-    button:hover:not(:disabled) {
+    button:hover {
       background: #1f5fd6;
     }
 
     #status {
-      margin-top: 10px;
+      margin-top: 12px;
       font-weight: bold;
       min-height: 20px;
 
-      /* Hidden state */
       visibility: hidden;
       opacity: 0;
       height: 0;
       overflow: hidden;
-
       transition: opacity 0.4s ease;
     }
 
@@ -76,17 +90,18 @@
 
 <body>
 
-<form id="contact-form">
-  <h2>Contact Us</h2>
+<div class="form-wrapper">
+  <form id="contact-form">
+    <h2>Contact Us</h2>
 
-  <input type="text" name="from_name" placeholder="Your Name" required>
-  <input type="email" name="reply_to" placeholder="Your Email" required>
-  <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+    <input type="text" name="from_name" placeholder="Your Name" required>
+    <input type="email" name="reply_to" placeholder="Your Email" required>
+    <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
 
-  <button type="submit" id="send-btn">Send Message</button>
-
-  <div id="status"></div>
-</form>
+    <button type="submit" id="send-btn">Send Message</button>
+    <div id="status"></div>
+  </form>
+</div>
 
 <script>
 const form = document.getElementById("contact-form");
@@ -101,7 +116,6 @@ function showStatus(message, type) {
   statusDiv.textContent = message;
   statusDiv.className = type;
 
-  // FORCE SHOW (Google Sites safe)
   statusDiv.style.visibility = "visible";
   statusDiv.style.opacity = "1";
   statusDiv.style.height = "auto";
@@ -114,7 +128,7 @@ function showStatus(message, type) {
       statusDiv.className = "";
       statusDiv.style.visibility = "hidden";
       statusDiv.style.height = "0";
-    }, 400); // wait for fade
+    }, 400);
   }, 5000);
 }
 
@@ -124,7 +138,7 @@ form.addEventListener("submit", function(e) {
   const userName = form.from_name.value;
 
   button.disabled = true;
-  button.innerText = "Sending...";
+  button.textContent = "Sending...";
 
   emailjs.sendForm(
     "service_tghxph7",
@@ -132,22 +146,16 @@ form.addEventListener("submit", function(e) {
     this
   ).then(
     function() {
-      showStatus(
-        `✅ Thanks, ${userName}! Your message was sent successfully.`,
-        "success"
-      );
+      showStatus(`✅ Thanks, ${userName}! Your message was sent successfully.`, "success");
       form.reset();
       button.disabled = false;
-      button.innerText = "Send Message";
+      button.textContent = "Send Message";
     },
     function(error) {
       console.error(error);
-      showStatus(
-        `❌ Sorry, ${userName}. Failed to send your message. Please try again.`,
-        "error"
-      );
+      showStatus(`❌ Sorry, ${userName}. Failed to send your message.`, "error");
       button.disabled = false;
-      button.innerText = "Send Message";
+      button.textContent = "Send Message";
     }
   );
 });
