@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Contact WADS</title>
 
+  <!-- EmailJS -->
   <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <script>
     (function(){
@@ -17,6 +18,7 @@
       background: #f6f8fa;
       padding: 20px;
     }
+
     form {
       max-width: 420px;
       margin: auto;
@@ -25,33 +27,41 @@
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
+
     input, textarea, button {
       width: 100%;
       padding: 10px;
       margin-top: 10px;
       font-size: 14px;
     }
+
     button {
       background: #2b7cff;
       color: white;
       border: none;
       cursor: pointer;
     }
+
     button:disabled {
       background: #9bbcff;
       cursor: not-allowed;
     }
+
     button:hover:not(:disabled) {
       background: #1f5fd6;
     }
+
     #status {
       margin-top: 10px;
       font-weight: bold;
-      min-height: 20px; /* keep space for messages */
+      min-height: 20px;
+      display: none; /* hidden by default */
     }
+
     #status.success {
       color: green;
     }
+
     #status.error {
       color: red;
     }
@@ -62,10 +72,13 @@
 
 <form id="contact-form">
   <h2>Contact Us</h2>
+
   <input type="text" name="from_name" placeholder="Your Name" required>
   <input type="email" name="reply_to" placeholder="Your Email" required>
   <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+
   <button type="submit" id="send-btn">Send Message</button>
+
   <div id="status"></div>
 </form>
 
@@ -74,11 +87,24 @@ const form = document.getElementById("contact-form");
 const button = document.getElementById("send-btn");
 const statusDiv = document.getElementById("status");
 
-function clearStatusAfterDelay() {
-  setTimeout(() => {
+let statusTimeout = null;
+
+function showStatus(message, type) {
+  // Clear previous timeout if it exists
+  if (statusTimeout) {
+    clearTimeout(statusTimeout);
+  }
+
+  statusDiv.textContent = message;
+  statusDiv.className = type;
+  statusDiv.style.display = "block";
+
+  // Hide after 5 seconds
+  statusTimeout = setTimeout(() => {
     statusDiv.textContent = "";
     statusDiv.className = "";
-  }, 5000); // 5 seconds
+    statusDiv.style.display = "none";
+  }, 5000);
 }
 
 form.addEventListener("submit", function(e) {
@@ -88,8 +114,7 @@ form.addEventListener("submit", function(e) {
 
   button.disabled = true;
   button.innerText = "Sending...";
-  statusDiv.textContent = "";
-  statusDiv.className = "";
+  statusDiv.style.display = "none";
 
   emailjs.sendForm(
     "service_tghxph7",
@@ -97,22 +122,22 @@ form.addEventListener("submit", function(e) {
     this
   ).then(
     function() {
-      statusDiv.textContent = `✅ Thanks, ${userName}! Your message was sent successfully.`;
-      statusDiv.className = "success";
+      showStatus(
+        `✅ Thanks, ${userName}! Your message was sent successfully.`,
+        "success"
+      );
       form.reset();
       button.disabled = false;
       button.innerText = "Send Message";
-
-      clearStatusAfterDelay(); // 👈 auto-hide
     },
     function(error) {
-      statusDiv.textContent = `❌ Sorry, ${userName}. Failed to send your message. Please try again.`;
-      statusDiv.className = "error";
       console.error(error);
+      showStatus(
+        `❌ Sorry, ${userName}. Failed to send your message. Please try again.`,
+        "error"
+      );
       button.disabled = false;
       button.innerText = "Send Message";
-
-      clearStatusAfterDelay(); // 👈 auto-hide
     }
   );
 });
