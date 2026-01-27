@@ -63,6 +63,9 @@ const button = document.getElementById("send-btn");
 
 form.addEventListener("submit", function(e) {
   e.preventDefault();
+
+  const userName = form.from_name.value;
+
   button.disabled = true;
   button.innerText = "Sending...";
 
@@ -72,13 +75,13 @@ form.addEventListener("submit", function(e) {
     this
   ).then(
     function() {
-      alert("✅ Message sent successfully!");
+      alert(`✅ Thanks, ${userName}! Your message was sent successfully.`);
       form.reset();
       button.disabled = false;
       button.innerText = "Send Message";
     },
     function(error) {
-      alert("❌ Failed to send message. Please try again.");
+      alert(`❌ Sorry, ${userName}. Failed to send your message. Please try again.`);
       console.error(error);
       button.disabled = false;
       button.innerText = "Send Message";
