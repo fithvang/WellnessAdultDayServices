@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Contact WADS</title>
+
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <script>
+    (function(){
+      emailjs.init("uRO_vWCjNIAegYXv_");
+    })();
+  </script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f6f8fa;
+      padding: 20px;
+    }
+    form {
+      max-width: 420px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    button {
+      background: #2b7cff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1f5fd6;
+    }
+  </style>
+</head>
+
+<body>
+
+<form id="contact-form">
+  <h2>Contact Us</h2>
+  <input type="text" name="from_name" placeholder="Your Name" required>
+  <input type="email" name="reply_to" placeholder="Your Email" required>
+  <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+  <button type="submit">Send Message</button>
+</form>
+
+<script>
+document.getElementById("contact-form").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  emailjs.sendForm(
+    "service_tghxph7",
+    "template_bfa95vf",
+    this
+  ).then(
+    () => alert("Message sent successfully!"),
+    (error) => alert("Failed to send: " + error.text)
+  );
+});
+</script>
+
+</body>
+</html>
