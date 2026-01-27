@@ -44,6 +44,16 @@
     button:hover:not(:disabled) {
       background: #1f5fd6;
     }
+    #status {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    #status.success {
+      color: green;
+    }
+    #status.error {
+      color: red;
+    }
   </style>
 </head>
 
@@ -55,11 +65,13 @@
   <input type="email" name="reply_to" placeholder="Your Email" required>
   <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
   <button type="submit" id="send-btn">Send Message</button>
+  <div id="status"></div>
 </form>
 
 <script>
 const form = document.getElementById("contact-form");
 const button = document.getElementById("send-btn");
+const statusDiv = document.getElementById("status");
 
 form.addEventListener("submit", function(e) {
   e.preventDefault();
@@ -68,6 +80,8 @@ form.addEventListener("submit", function(e) {
 
   button.disabled = true;
   button.innerText = "Sending...";
+  statusDiv.textContent = "";
+  statusDiv.className = "";
 
   emailjs.sendForm(
     "service_tghxph7",
@@ -75,13 +89,15 @@ form.addEventListener("submit", function(e) {
     this
   ).then(
     function() {
-      alert(`✅ Thanks, ${userName}! Your message was sent successfully.`);
+      statusDiv.textContent = `✅ Thanks, ${userName}! Your message was sent successfully.`;
+      statusDiv.className = "success";
       form.reset();
       button.disabled = false;
       button.innerText = "Send Message";
     },
     function(error) {
-      alert(`❌ Sorry, ${userName}. Failed to send your message. Please try again.`);
+      statusDiv.textContent = `❌ Sorry, ${userName}. Failed to send your message. Please try again.`;
+      statusDiv.className = "error";
       console.error(error);
       button.disabled = false;
       button.innerText = "Send Message";
