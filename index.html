@@ -37,7 +37,11 @@
       border: none;
       cursor: pointer;
     }
-    button:hover {
+    button:disabled {
+      background: #9bbcff;
+      cursor: not-allowed;
+    }
+    button:hover:not(:disabled) {
       background: #1f5fd6;
     }
   </style>
@@ -50,20 +54,35 @@
   <input type="text" name="from_name" placeholder="Your Name" required>
   <input type="email" name="reply_to" placeholder="Your Email" required>
   <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
-  <button type="submit">Send Message</button>
+  <button type="submit" id="send-btn">Send Message</button>
 </form>
 
 <script>
-document.getElementById("contact-form").addEventListener("submit", function(e) {
+const form = document.getElementById("contact-form");
+const button = document.getElementById("send-btn");
+
+form.addEventListener("submit", function(e) {
   e.preventDefault();
+  button.disabled = true;
+  button.innerText = "Sending...";
 
   emailjs.sendForm(
     "service_tghxph7",
     "template_bfa95vf",
     this
   ).then(
-    () => alert("Message sent successfully!"),
-    (error) => alert("Failed to send: " + error.text)
+    function() {
+      alert("✅ Message sent successfully!");
+      form.reset();
+      button.disabled = false;
+      button.innerText = "Send Message";
+    },
+    function(error) {
+      alert("❌ Failed to send message. Please try again.");
+      console.error(error);
+      button.disabled = false;
+      button.innerText = "Send Message";
+    }
   );
 });
 </script>
